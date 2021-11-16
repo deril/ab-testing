@@ -2,8 +2,10 @@
   (:use #:cl
         #:mito)
   (:export #:experiment
+           #:experiment-name
            #:update-plan
-           #:next-variant-id))
+           #:next-variant-id
+           #:all-experiments))
 (in-package :ab-testing/models/experiment)
 
 (deftable experiment ()
@@ -19,3 +21,9 @@
 (defun next-variant-id (experiment seed)
   (let ((plan (experiment-plan experiment)))
     (nth (mod seed (length plan)) plan)))
+
+(defun all-experiments ()
+  (select-dao 'experiment))
+
+(defmethod all ((object experiment))
+  (select-dao 'experiment))

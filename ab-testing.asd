@@ -10,7 +10,7 @@
                 :components
                 ((:file "main")
                  (:file "db" :depends-on ("models"))
-                 (:file "web" :depends-on ("db"))
+                 (:file "web" :depends-on ("db" "experiment-service"))
                  (:file "experiment-service")
                  (:module "models"
                           :components

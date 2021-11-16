@@ -6,6 +6,7 @@
                 #:experiment)
   (:export #:variant
            #:variant-weight
+           #:variant-payload
            #:variants-by-experiment
            #:find-variant))
 (in-package :ab-testing/models/variant)

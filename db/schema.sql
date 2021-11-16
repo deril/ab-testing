@@ -8,7 +8,7 @@ CREATE TABLE experiment (
 
 CREATE TABLE variant (
        id               INTEGER PRIMARY KEY AUTOINCREMENT,
-       weight           INTEGER  NOT NULL,
+       weight           INTEGER NOT NULL,
        payload          TEXT    NOT NULL,
        experiment_id    INTEGER NOT NULL,
        created_at       TIMESTAMP,
@@ -20,11 +20,13 @@ CREATE TABLE variant (
 CREATE TABLE subject (
       id                INTEGER PRIMARY KEY AUTOINCREMENT,
       device_id         TEXT    NOT NULL,
-      variant_id        INTEGER,
+      variant_id        INTEGER NOT NULL,
+      experiment_id     INTEGER NOT NULL,
       created_at        TIMESTAMP,
       updated_at        TIMESTAMP,
 
-      FOREIGN KEY (variant_id) REFERENCES variant(id)
+      FOREIGN KEY (variant_id) REFERENCES variant(id),
+      FOREIGN KEY (experiment_id) REFERENCES experiment(id)
 );
 
 CREATE INDEX device_id_idx ON subject(device_id);
