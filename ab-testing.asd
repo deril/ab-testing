@@ -17,7 +17,7 @@
                           ((:file "experiment")
                            (:file "variant" :depends-on ("experiment"))
                            (:file "subject" :depends-on ("variant")))))))
-  :description ""
+  :description "Very simple AB testing system API created for fun"
   :in-order-to ((test-op (test-op "ab-testing/tests"))))
 
 (defsystem "ab-testing/tests"
