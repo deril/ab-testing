@@ -5,21 +5,24 @@
   (:import-from #:ab-testing/models/variant
                 #:variant
                 #:variant-weight
-                #:variants-by-experiment
+                #:variant-payload
                 #:find-variant)
   (:import-from #:ab-testing/models/experiment
                 #:experiment
-                #:all-experiments
                 #:update-plan
-                #:next-variant-id)
+                #:next-variant-id
+                #:experiment-name)
   (:import-from #:ab-testing/models/subject
                 #:create-subject)
-  (:local-nicknames (#:subject #:ab-testing/models/subject))
-  (:export #:subjects-for))
+  (:local-nicknames (#:subject #:ab-testing/models/subject)
+                    (#:experiment #:ab-testing/models/experiment)
+                    (#:variant #:ab-testing/models/variant))
+  (:export #:subjects-for
+           #:statistic))
 (in-package #:ab-testing/experiment-service)
 
 (defun calculate-plan! (experiment)
-  (let* ((variants (variants-by-experiment experiment))
+  (let* ((variants (variant:by-experiment experiment))
          (id-weight-pair (mapcar #'(lambda (variant)
                                      (cons (object-id variant) (variant-weight variant)))
                                  variants)))
@@ -38,7 +41,22 @@
   (let ((subjects (subject:find-by-device-id device-id)))
     (if subjects
         subjects
-        (let ((experiments (all-experiments)))
+        (let ((experiments (experiment:all)))
           (mapcar #'(lambda (experiment)
                       (create-subject device-id experiment (next-variant experiment)))
                   experiments)))))
+
+(defun statistic ()
+  (flet ((variants-list (experiment)
+           (mapcar #'(lambda (variant)
+                       (list :name (variant-payload variant)
+                             :devices-count (subject:count-by :key :variant :value variant)))
+                   (variant:by-experiment experiment))))
+
+    (list :devices-count (subject:count-by)
+          :experiments
+          (mapcar #'(lambda (experiment)
+                      (list :name (experiment-name experiment)
+                            :devices-count (subject:count-by :key :experiment :value experiment)
+                            :variants (variants-list experiment)))
+                  (experiment:all)))))

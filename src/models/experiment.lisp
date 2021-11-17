@@ -5,7 +5,7 @@
            #:experiment-name
            #:update-plan
            #:next-variant-id
-           #:all-experiments))
+           #:all))
 (in-package :ab-testing/models/experiment)
 
 (deftable experiment ()
@@ -22,8 +22,5 @@
   (let ((plan (experiment-plan experiment)))
     (nth (mod seed (length plan)) plan)))
 
-(defun all-experiments ()
-  (select-dao 'experiment))
-
-(defmethod all ((object experiment))
+(defun all ()
   (select-dao 'experiment))

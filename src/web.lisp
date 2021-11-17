@@ -5,7 +5,8 @@
   (:import-from #:ab-testing/db
                 #:with-connection)
   (:import-from #:ab-testing/experiment-service
-                #:subjects-for)
+                #:subjects-for
+                #:statistic)
   (:import-from #:ab-testing/models/subject
                 #:subject)
   (:local-nicknames (:subject :ab-testing/models/subject)))
@@ -32,11 +33,10 @@
 (defroute stats
     ("/stats"
      :method :get
-     :decorators (@db))
+     :decorators (@json @db))
     ()
   "Statistic for experiments and devices"
-  ;; Создайте страницу для статистики: простая таблица со списком экспериментов, общее количество девайсов, участвующих в эксперименте и их распределение между опциями
-  )
+  (to-json (statistic)))
 
 (defmethod %to-json ((subject subject))
   (with-object

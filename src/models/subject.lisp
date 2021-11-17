@@ -12,6 +12,7 @@
   (:export #:subject
            #:find-by-device-id
            #:create-subject
+           #:count-by
            #:name
            #:value))
 (in-package :ab-testing/models/subject)
@@ -29,6 +30,16 @@
               :device-id device-id
               :experiment experiment
               :variant variant))
+
+(defun count-by (&key key value)
+  (case key
+    (:variant (count-dao 'subject :variant value))
+    (:experiment (count-dao 'subject :experiment value))
+    (otherwise
+     (let ((sql (select ((:as (:count (:distinct :device_id)) :count)) (from :subject))))
+       (getf (first
+              (retrieve-by-sql sql))
+             :count)))))
 
 (defmethod name ((subject subject))
   (experiment-name (subject-experiment subject)))

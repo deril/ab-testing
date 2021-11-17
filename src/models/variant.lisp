@@ -7,7 +7,7 @@
   (:export #:variant
            #:variant-weight
            #:variant-payload
-           #:variants-by-experiment
+           #:by-experiment
            #:find-variant))
 (in-package :ab-testing/models/variant)
 
@@ -16,7 +16,7 @@
    (payload :col-type :text)
    (experiment :col-type experiment)))
 
-(defun variants-by-experiment (experiment)
+(defun by-experiment (experiment)
   (select-dao 'variant (where (:= :experiment experiment))))
 
 (defun find-variant (id)
