@@ -20,10 +20,17 @@
   (with-connection
       (funcall next)))
 
+(defun @check-header (next)
+  (if (hunchentoot:header-in* :device-token)
+      (funcall next)
+      (progn
+        (setf (hunchentoot:return-code*) hunchentoot:+http-bad-request+)
+        nil)))
+
 (defroute experiments
     ("/experiments"
      :method :get
-     :decorators (@json @db))
+     :decorators (@json @db @check-header))
     ()
   "List of active experiments for the device."
   (let ((device-id (hunchentoot:header-in* :device-token)))
